@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menyu Tahrirlash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <!-- Tahrirlash formasi -->
+        <div class="flex-1 p-8"  style="padding-left: 270px;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Menyu Turini Yangilash</h2>
+                <label class="block mb-2 text-sm font-medium text-gray-700">ID</label>
+                <input type="number" id="menuTypeId" class="w-full p-2 border border-gray-300 rounded-md mb-4 bg-gray-100" readonly>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Nomi</label>
+                <input type="text" id="updateTitle" class="w-full p-2 border border-gray-300 rounded-md mb-4" placeholder="Yangi nom">
+                <label class="block mb-2 text-sm font-medium text-gray-700">Category</label>
+                <input type="text" id="updateCategory" class="w-full p-2 border border-gray-300 rounded-md mb-4" placeholder="categoryid">
+                <label class="block mb-2 text-sm font-medium text-gray-700">Tavsif</label>
+                <textarea id="updateDescription" class="w-full p-2 border border-gray-300 rounded-md mb-4" placeholder="Yangi tavsif"></textarea>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Rasm</label> 
+                <input type="file" id="updateImage" accept="image/*" class="w-full p-2 border rounded-md mb-4">
+                <button onclick="updateMenuType()" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">Yangilash</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar qo'shish
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+
+        const MenuEdit_url = "/api/backend/edit";
+        const menuUrl= '/api/backend/get' 
+
+        // URL'dan ID olish va ma'lumotlarni yuklash
+        const urlParams = new URLSearchParams(window.location.search);
+        const menuId = urlParams.get('id');
+        console.log(menuId);
+        
+
+        fetch(`${menuUrl}/${menuId}`)
+            .then(res => res.json())
+            .then(menu => {
+                console.log(menu);
+                
+                document.getElementById("menuTypeId").value = menu.id; 
+                document.getElementById("updateCategory").value=menu.category_id
+                document.getElementById("updateTitle").value = menu.title;
+                document.getElementById("updateDescription").value = menu.description;
+            });
+
+            function updateMenuType() {
+                const menuTypeId = document.getElementById("menuTypeId").value;
+                const title = document.getElementById("updateTitle").value;
+                const description = document.getElementById("updateDescription").value;
+                const category = document.getElementById("updateCategory").value;
+                const fileInput = document.getElementById("updateImage").files[0];
+
+                if (!menuTypeId || !title || !description) {
+                    alert("Barcha maydonlarni to‘ldiring!");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("title", title);
+                formData.append("description", description);
+                formData.append("category_id", category);
+                if (fileInput) formData.append("image", fileInput);
+
+                fetch(`${MenuEdit_url}/${menuTypeId}`, { 
+                    method: "PUT",
+                    body: formData 
+                })
+                .then(response => response.json())
+                .then(() => {
+                    window.location.href = "backend.html"; // Sahifani qayta yuklash
+                })
+                .catch(error => console.error("Xatolik:", error));
+            }
+
+    </script>
+</body>
+</html>

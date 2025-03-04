@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menyu Tahrirlash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar-container"></div>
+ 
+        <div class="flex-1 p-8" style="padding-left: 270px;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Menyu Item Qo‘shish</h2>
+                <label class="block mb-2 text-sm font-medium text-gray-700">ID</label>
+                <input type="number" id="menuitemId" class="w-full p-2 border border-gray-300 rounded-md mb-4 bg-gray-100" readonly>
+                
+                <label class="block mb-2 text-gray-700">Nomi</label>
+                <input type="text" id="editItemTitle" class="w-full p-2 border rounded-md mb-3">
+                
+                <label class="block mb-2 text-gray-700">Tavsif</label>
+                <input type="text" id="editItemDescription" class="w-full p-2 border rounded-md mb-3">
+                
+                <label class="block mb-2 text-gray-700">Menu type</label>
+                <input type="number" id="editItemMenuType" class="w-full p-2 border rounded-md mb-3">
+                
+                <label class="block mb-2 text-gray-700">Qiymati</label>
+                <input type="number" id="editItemPrice" class="w-full p-2 border rounded-md mb-3">
+                
+                <label class="block mb-2 text-gray-700">Rasm</label>
+                <input type="file" id="editItemImage" accept="image/*" class="w-full p-2 border rounded-md mb-3">
+                
+                <label class="block mb-2 text-gray-700">Ko‘rinadigan ustunlar</label>
+                <div class="mb-3">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="isVisibleImage" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Rasm</span>
+                    </label>
+                    <label class="inline-flex items-center ml-4">
+                        <input type="checkbox" id="isVisiblePrice" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Narx</span>
+                    </label>
+                    <label class="inline-flex items-center ml-4">
+                        <input type="checkbox" id="isVisibleDescription" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Tavsif</span>
+                    </label>
+                </div>
+                <button class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition" onclick="editMenuItem()">Yangilash</button>
+            </div>
+        </div>
+    </div>
+
+    <script> 
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+
+        const MenuItemEdit_url = "/api/backend/menu/update/";
+        const menuUrl = '/api/backend/menu/get';
+  
+    const urlParams = new URLSearchParams(window.location.search);
+    const menuId = urlParams.get('id');
+
+    if (!menuId) {
+        window.location.href = "menuItem.html";
+    }
+
+    fetch(`${menuUrl}/${menuId}`)
+    .then(res => res.json())
+    .then(menu => {
+        document.getElementById("menuitemId").value = menu.id;
+        document.getElementById("editItemTitle").value = menu.title;
+        document.getElementById("editItemDescription").value = menu.description || '';
+        document.getElementById("editItemMenuType").value = menu.menu_type;
+        document.getElementById("editItemPrice").value = menu.price;
+
+        // visible_columns ni parse qilib checkboxlarni belgilash
+        const visibleColumns = menu.is_visible.split(",");
+        document.getElementById("isVisibleImage").checked = visibleColumns.includes("image");
+        document.getElementById("isVisiblePrice").checked = visibleColumns.includes("price");
+        document.getElementById("isVisibleDescription").checked = visibleColumns.includes("description");
+    })
+    .catch(error => console.error("Ma'lumot yuklashda xato:", error));
+
+    async function editMenuItem() {
+    const button = document.querySelector("button");
+    button.disabled = true;
+    button.textContent = "Yuklanmoqda...";
+
+    const menuItemId = document.getElementById("menuitemId").value;
+    const title = document.getElementById("editItemTitle").value.trim();
+    const description = document.getElementById("editItemDescription").value.trim();
+    const menuType = document.getElementById("editItemMenuType").value.trim();
+    const price = document.getElementById("editItemPrice").value.trim();
+    const fileInput = document.getElementById("editItemImage").files[0];
+
+    if (!menuItemId || !title || !menuType || !price) {
+        alert("ID, nomi, menu turi va narx majburiy!");
+        button.disabled = false;
+        button.textContent = "Yangilash";
+        return;
+    }
+
+    const visibleColumns = [];
+    if (document.getElementById("isVisibleImage").checked) visibleColumns.push("image");
+    if (document.getElementById("isVisiblePrice").checked) visibleColumns.push("price");
+    if (document.getElementById("isVisibleDescription").checked) visibleColumns.push("description");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("menuType", menuType);
+    formData.append("price", price);
+    formData.append("visibleColumns", JSON.stringify(visibleColumns));
+    if (fileInput) formData.append("image", fileInput);
+
+    try {
+        const response = await fetch(`${MenuItemEdit_url}${menuItemId}`, {
+            method: "PUT",
+            body: formData
+        });
+        const data = await response.json();
+        console.log("Server javobi:", data); // Serverdan kelgan xatolikni ko‘rish uchun
+        if (response.ok) {
+            window.location.href = "menuItem.html";
+        } else {
+            alert("Xatolik: " + data.message);
+        }
+    } catch (error) {
+        console.error("Tarmoq xatosi:", error);
+        alert("Tarmoq xatosi!");
+    } finally {
+        button.disabled = false;
+        button.textContent = "Yangilash";
+    }
+}
+
+    </script>
+</body>
+</html>

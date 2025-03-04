@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafe Admin Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <div id="cms-sidebar-container" class="fixed"></div>
+        <div class="flex-1 p-8" style="padding-left: 270px;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Foydalanuvchi yangilash</h2>
+                <form id="userForm" enctype="multipart/form-data">
+                    <label class="block mb-2 text-gray-700">ID</label>
+                    <input type="text" id="userId" readonly class="w-full p-2 border rounded-md mb-3 bg-gray-100">
+
+                    <label class="block mb-2 text-gray-700">Nomi <span class="text-red-500">*</span></label>
+                    <input type="text" id="addUserName" class="w-full p-2 border rounded-md mb-3">
+
+                    <label class="block mb-2 text-gray-700">Email</label>
+                    <input type="email" id="addUserEmail" class="w-full p-2 border rounded-md mb-3">
+
+                    <label class="block mb-2 text-gray-700">Telefon raqam <span class="text-red-500">*</span></label>
+                    <input type="tel" id="addUserTelNumber" class="w-full p-2 border rounded-md mb-3">
+
+                    <label class="block mb-2 text-gray-700">Kafening manzili <span class="text-red-500">*</span></label>
+                    <input type="text" id="addUserManzil" class="w-full p-2 border rounded-md mb-3">
+
+                    <label class="block mb-2 text-gray-700">Kafe rasmi</label>
+                    <div class="flex items-center gap-3 mb-3">
+                        <button type="button" id="kafeImageBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Rasm tanlash</button>
+                        <input type="file" id="kafeImage" name="kafe_image" accept="image/*" class="hidden">
+                        <img id="kafeImagePreview" src="#" alt="Preview" class="w-12 h-12 object-cover rounded-md hidden">
+                    </div>
+
+                    <label class="block mb-2 text-gray-700">Kafe logosi</label>
+                    <div class="flex items-center gap-3 mb-3">
+                        <button type="button" id="kafeLogoBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">Logo tanlash</button>
+                        <input type="file" id="kafeLogo" name="kafe_logo" accept="image/*" class="hidden">
+                        <img id="kafeLogoPreview" src="#" alt="Preview" class="w-12 h-12 object-cover rounded-md hidden">
+                    </div>
+
+                    <label class="block mb-2 text-gray-700">Xaritadagi manzil URL <span class="text-red-500">*</span></label>
+                    <input type="url" id="addUserMapUrl" class="w-full p-2 border rounded-md mb-3">
+
+                    <label class="block mb-2 text-gray-700">Ijtimoiy tarmoq nicknamelari</label>
+                    <div class="grid grid-cols-5 gap-4 mb-3">
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/facebook.png" alt="Facebook" class="w-7 h-7 object-contain">
+                            <input type="text" id="facebook" name="social_networks[facebook]" placeholder="Facebook" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/instagram.png" alt="Instagram" class="w-7 h-7 object-contain">
+                            <input type="text" id="instagram" name="social_networks[instagram]" placeholder="Instagram" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/twitter.png" alt="Twitter" class="w-7 h-7 object-contain">
+                            <input type="text" id="twitter" name="social_networks[twitter]" placeholder="Twitter" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/tik-tok.png" alt="TikTok" class="w-7 h-7 object-contain">
+                            <input type="text" id="tiktok" name="social_networks[tiktok]" placeholder="TikTok" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/connection.png" alt="Snapchat" class="w-7 h-7 object-contain">
+                            <input type="text" id="snapchat" name="social_networks[snapchat]" placeholder="Snapchat" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/youtube.png" alt="YouTube" class="w-7 h-7 object-contain">
+                            <input type="text" id="youtube" name="social_networks[youtube]" placeholder="YouTube" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/whatsapp.png" alt="WhatsApp" class="w-7 h-7 object-contain">
+                            <input type="text" id="whatsapp" name="social_networks[whatsapp]" placeholder="WhatsApp" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/telegram.png" alt="Telegram" class="w-7 h-7 object-contain">
+                            <input type="text" id="telegram" name="social_networks[telegram]" placeholder="Telegram" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/threads.png" alt="Threads" class="w-7 h-7 object-contain">
+                            <input type="text" id="threads" name="social_networks[threads]" placeholder="Threads" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/odnoklassniki.png" alt="Odnoklassniki" class="w-7 h-7 object-contain">
+                            <input type="text" id="odnoklassniki" name="social_networks[odnoklassniki]" placeholder="Odnoklassniki" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="./iconka/vk-social-network-logo.png" alt="VK" class="w-7 h-7 object-contain">
+                            <input type="text" id="vk" name="social_networks[vk]" placeholder="VK" class="w-full p-2 border rounded-md text-center">
+                        </div>
+                    </div>
+
+                    <!-- <label class="block mb-2 text-gray-700">Menuda ko‘rinadigan ustunlar</label>
+                    <div class="flex flex-wrap gap-4 mb-3">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="visible_columns" value="email" class="form-checkbox text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Email</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="visible_columns" value="phone" class="form-checkbox text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Telefon raqam</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="visible_columns" value="map_url" class="form-checkbox text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Xaritadagi manzil URL</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="visible_columns" value="social_networks" class="form-checkbox text-indigo-600 h-5 w-5">
+                            <span class="ml-2 text-gray-700">Ijtimoiy tarmoqlar</span>
+                        </label>
+                    </div> -->
+
+                    <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition">
+                        Yangilash
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('../cms.panel/cms.sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('cms-sidebar-container').innerHTML = data;
+            });
+
+        const UserEdit_url = "/api/cms/user/update";
+        const user_Url = "/api/cms/users";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("id");
+
+        if (userId) {
+            fetch(`${user_Url}/${userId}`)
+                .then(res => res.json())
+                .then(user => {
+                    document.getElementById("userId").value = user.id;
+                    document.getElementById("addUserName").value = user.kafe_name;
+                    document.getElementById("addUserEmail").value = user.email || '';
+                    document.getElementById("addUserTelNumber").value = user.phone;
+                    document.getElementById("addUserManzil").value = user.address;
+                    document.getElementById("addUserMapUrl").value = user.map_url;
+
+                    const socialNetworks = user.social_networks ? JSON.parse(user.social_networks) : {};
+                    document.getElementById("facebook").value = socialNetworks.facebook || '';
+                    document.getElementById("instagram").value = socialNetworks.instagram || '';
+                    document.getElementById("twitter").value = socialNetworks.twitter || '';
+                    document.getElementById("tiktok").value = socialNetworks.tiktok || '';
+                    document.getElementById("snapchat").value = socialNetworks.snapchat || '';
+                    document.getElementById("youtube").value = socialNetworks.youtube || '';
+                    document.getElementById("whatsapp").value = socialNetworks.whatsapp || '';
+                    document.getElementById("telegram").value = socialNetworks.telegram || '';
+                    document.getElementById("threads").value = socialNetworks.threads || '';
+                    document.getElementById("odnoklassniki").value = socialNetworks.odnoklassniki || '';
+                    document.getElementById("vk").value = socialNetworks.vk || '';
+
+                    // if (user.kafe_image) {
+                    //     document.getElementById("kafeImagePreview").src = user.kafe_image;
+                    //     document.getElementById("kafeImagePreview").classList.remove("hidden");
+                    // }
+                    // if (user.kafe_logo) {
+                    //     document.getElementById("kafeLogoPreview").src = user.kafe_logo;
+                    //     document.getElementById("kafeLogoPreview").classList.remove("hidden");
+                    // }
+
+                    // const visibleColumns = user.visible_columns ? user.visible_columns.split(',') : [];
+                    // document.querySelectorAll("input[name='visible_columns']").forEach(checkbox => {
+                    //     checkbox.checked = visibleColumns.includes(checkbox.value);
+                    // });
+                })
+                .catch(error => console.error("Foydalanuvchini olishda xatolik:", error));
+        }
+
+        const kafeImageBtn = document.getElementById("kafeImageBtn");
+        const kafeImageInput = document.getElementById("kafeImage");
+        const kafeImagePreview = document.getElementById("kafeImagePreview");
+        const kafeLogoBtn = document.getElementById("kafeLogoBtn");
+        const kafeLogoInput = document.getElementById("kafeLogo");
+        const kafeLogoPreview = document.getElementById("kafeLogoPreview");
+
+        kafeImageBtn.addEventListener("click", () => kafeImageInput.click());
+        kafeLogoBtn.addEventListener("click", () => kafeLogoInput.click());
+
+        kafeImageInput.addEventListener("change", () => {
+            const file = kafeImageInput.files[0];
+            if (file) {
+                kafeImagePreview.src = URL.createObjectURL(file);
+                kafeImagePreview.classList.remove("hidden");
+            }
+        });
+
+        kafeLogoInput.addEventListener("change", () => {
+            const file = kafeLogoInput.files[0];
+            if (file) {
+                kafeLogoPreview.src = URL.createObjectURL(file);
+                kafeLogoPreview.classList.remove("hidden");
+            }
+        });
+
+        document.getElementById("userForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const userId = document.getElementById("userId").value;
+            const formData = new FormData();
+            formData.append("kafe_name", document.getElementById("addUserName").value.trim());
+            formData.append("email", document.getElementById("addUserEmail").value.trim());
+            formData.append("phone", document.getElementById("addUserTelNumber").value.trim());
+            formData.append("address", document.getElementById("addUserManzil").value.trim());
+            formData.append("map_url", document.getElementById("addUserMapUrl").value.trim());
+
+            const socialNetworks = {
+                facebook: document.getElementById("facebook").value.trim(),
+                instagram: document.getElementById("instagram").value.trim(),
+                twitter: document.getElementById("twitter").value.trim(),
+                tiktok: document.getElementById("tiktok").value.trim(),
+                snapchat: document.getElementById("snapchat").value.trim(),
+                youtube: document.getElementById("youtube").value.trim(),
+                whatsapp: document.getElementById("whatsapp").value.trim(),
+                telegram: document.getElementById("telegram").value.trim(),
+                threads: document.getElementById("threads").value.trim(),
+                odnoklassniki: document.getElementById("odnoklassniki").value.trim(),
+                vk: document.getElementById("vk").value.trim()
+            };
+            formData.append("social_networks", JSON.stringify(socialNetworks));
+
+            // const visibleColumns = [];
+            // document.querySelectorAll("input[name='visible_columns']:checked").forEach(checkbox => {
+            //     visibleColumns.push(checkbox.value);
+            // });
+            // formData.append("visible_columns", visibleColumns.join(","));
+
+            if (kafeImageInput.files[0]) formData.append("kafe_image", kafeImageInput.files[0]);
+            if (kafeLogoInput.files[0]) formData.append("kafe_logo", kafeLogoInput.files[0]);
+
+            if (!formData.get("kafe_name") || !formData.get("phone") || !formData.get("address") || !formData.get("map_url")) {
+                alert("Barcha majburiy maydonlarni to‘ldiring!");
+                return;
+            }
+
+            fetch(`${UserEdit_url}/${userId}`, {
+                method: "PUT",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(() => {
+                alert("Foydalanuvchi muvaffaqiyatli yangilandi!");
+                window.location.href = "../cms.panel/cms.html";
+            })
+            .catch(error => {
+                console.error("Xatolik:", error);
+                alert("Yangilashda xatolik yuz berdi!");
+            });
+        });
+    </script>
+</body>
+</html>

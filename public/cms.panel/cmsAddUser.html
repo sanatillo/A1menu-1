@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafe Admin Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script> 
+</head>
+<body class="min-h-screen flex font-sans">
+    <div class="flex h-screen w-full">
+        <div id="cms-sidebar-container" class="fixed w-[260px]"></div>
+        <div class="flex-1 p-2" style="padding-left: 270px;">
+            <div class="mx-auto bg-white py-2 px-8 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">User Qo‘shish</h2>
+                <form id="userForm" enctype="multipart/form-data">
+                    <div class="flex gap-5 mb-5">
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Nomi <span class="text-red-500">*</span></label>
+                            <input type="text" id="addUserName" placeholder="B0YB0LLAR kafe" class="w-full p-3 border rounded-lg bg-gray-50 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" data-field="name">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label>
+                            <input type="email" id="addUserEmail" placeholder="B0YB0LLAR@gmail.com" class="w-full p-3 border rounded-lg bg-gray-50 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" data-field="email">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Telefon raqam <span class="text-red-500">*</span></label>
+                            <input type="tel" id="addUserTelNumber" placeholder="+99899 425 79 21" class="w-full p-3 border rounded-lg bg-gray-50 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" data-field="phone">
+                        </div>
+                    </div> 
+                    <div class="flex gap-5 mb-5">
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Xaritadagi manzil URL <span class="text-red-500">*</span></label>
+                            <input type="url" id="addUserMapUrl" placeholder="https://www.google.com/maps/..." class="w-full p-3 border rounded-lg bg-gray-50 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" data-field="map_url">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Kafening manzili <span class="text-red-500">*</span></label>
+                            <input type="text" id="addUserManzil" placeholder="Baku, Central Park" class="w-full p-3 border rounded-lg bg-gray-50 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" data-field="address">
+                        </div>
+                    </div>
+                    <div class="flex gap-5 mb-5">
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Kafe rasmi</label>
+                            <div class="flex items-center gap-3">
+                                <button type="button" id="kafeImageBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Rasm tanlash</button>
+                                <input type="file" id="kafeImage" accept="image/*" class="hidden" data-field="kafe_image">
+                                <img id="kafeImagePreview" src="#" alt="Preview" class="w-12 h-12 object-cover rounded-md hidden">
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block mb-2 text-sm font-medium text-gray-700">Kafe logosi</label>
+                            <div class="flex items-center gap-3">
+                                <button type="button" id="kafeLogoBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">Logo tanlash</button>
+                                <input type="file" id="kafeLogo" accept="image/*" class="hidden" data-field="kafe_logo">
+                                <img id="kafeLogoPreview" src="#" alt="Preview" class="w-12 h-12 object-cover rounded-md hidden">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block mb-2 text-sm font-medium text-gray-700">Ijtimoiy tarmoq nicknamelari</label>
+                        <div class="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-5 mt-5">
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/facebook.png" alt="Facebook" class="w-7 h-7 object-contain">
+                                <input type="text" id="facebook" placeholder="Facebook" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/instagram.png" alt="Instagram" class="w-7 h-7 object-contain">
+                                <input type="text" id="instagram" placeholder="Instagram" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/twitter.png" alt="Twitter" class="w-7 h-7 object-contain">
+                                <input type="text" id="twitter" placeholder="Twitter" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/tik-tok.png" alt="TikTok" class="w-7 h-7 object-contain">
+                                <input type="text" id="tiktok" placeholder="TikTok" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/connection.png" alt="Snapchat" class="w-7 h-7 object-contain">
+                                <input type="text" id="snapchat" placeholder="Snapchat" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/youtube.png" alt="YouTube" class="w-7 h-7 object-contain">
+                                <input type="text" id="youtube" placeholder="YouTube" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/whatsapp.png" alt="WhatsApp" class="w-7 h-7 object-contain">
+                                <input type="text" id="whatsapp" placeholder="WhatsApp" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/telegram.png" alt="Telegram" class="w-7 h-7 object-contain">
+                                <input type="text" id="telegram" placeholder="Telegram" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/threads.png" alt="Threads" class="w-7 h-7 object-contain">
+                                <input type="text" id="threads" placeholder="Threads" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/odnoklassniki.png" alt="Odnoklassniki" class="w-7 h-7 object-contain">
+                                <input type="text" id="odnoklassniki" placeholder="Odnoklassniki" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                            <div class="flex flex-col items-center gap-2 bg-white p-3 rounded-lg shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+                                <img src="./iconka/vk-social-network-logo.png" alt="VK" class="w-7 h-7 object-contain">
+                                <input type="text" id="vk" placeholder="VK" class="w-full p-2 border rounded-md bg-gray-50 text-center focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            </div>
+                        </div>
+                    </div>
+                 
+                    <button type="submit" class="w-full mt-6 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition shadow-md">
+                        Qo‘shish
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('../cms.panel/cms.sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('cms-sidebar-container').innerHTML = data;
+            });
+
+        const kafeImageBtn = document.getElementById("kafeImageBtn");
+        const kafeImageInput = document.getElementById("kafeImage");
+        const kafeImagePreview = document.getElementById("kafeImagePreview");
+        const kafeLogoBtn = document.getElementById("kafeLogoBtn");
+        const kafeLogoInput = document.getElementById("kafeLogo");
+        const kafeLogoPreview = document.getElementById("kafeLogoPreview");
+
+        kafeImageBtn.addEventListener("click", () => kafeImageInput.click());
+        kafeLogoBtn.addEventListener("click", () => kafeLogoInput.click());
+
+        kafeImageInput.addEventListener("change", () => {
+            const file = kafeImageInput.files[0];
+            if (file) {
+                kafeImagePreview.src = URL.createObjectURL(file);
+                kafeImagePreview.classList.remove("hidden");
+            }
+        });
+
+        kafeLogoInput.addEventListener("change", () => {
+            const file = kafeLogoInput.files[0];
+            if (file) {
+                kafeLogoPreview.src = URL.createObjectURL(file);
+                kafeLogoPreview.classList.remove("hidden");
+            }
+        });
+
+        document.getElementById("userForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const userName = document.getElementById("addUserName").value.trim();
+            const userEmail = document.getElementById("addUserEmail").value.trim();
+            const userTelNumber = document.getElementById("addUserTelNumber").value.trim(); 
+            const userManzil = document.getElementById("addUserManzil").value.trim();
+            const userMapUrl = document.getElementById("addUserMapUrl").value.trim();
+            const kafeImage = document.getElementById("kafeImage").files[0];
+            const kafeLogo = document.getElementById("kafeLogo").files[0];
+
+            const socialNetworks = {
+                facebook: document.getElementById("facebook").value.trim(),
+                instagram: document.getElementById("instagram").value.trim(),
+                twitter: document.getElementById("twitter").value.trim(),
+                tiktok: document.getElementById("tiktok").value.trim(),
+                snapchat: document.getElementById("snapchat").value.trim(),
+                youtube: document.getElementById("youtube").value.trim(),
+                whatsapp: document.getElementById("whatsapp").value.trim(),
+                telegram: document.getElementById("telegram").value.trim(),
+                threads: document.getElementById("threads").value.trim(),
+                odnoklassniki: document.getElementById("odnoklassniki").value.trim(),
+                vk: document.getElementById("vk").value.trim()
+            };
+ 
+            if (!userName || !userTelNumber || !userManzil || !userMapUrl || !userEmail) {
+                alert("Majburiy maydonlarni to‘ldiring (Nomi, Telefon raqam, Manzil, Xarita URL, Email)!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("kafe_name", userName);
+            formData.append("email", userEmail);
+            formData.append("phone", userTelNumber);
+            formData.append("address", userManzil);
+            formData.append("map_url", userMapUrl); 
+            formData.append("social_networks", JSON.stringify(socialNetworks));
+            if (kafeImage) formData.append("kafe_image", kafeImage);
+            if (kafeLogo) formData.append("kafe_logo", kafeLogo);
+
+            try {
+                const response = await fetch("/api/cms/cmsAddUser", { // To‘liq URL
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("Foydalanuvchi muvaffaqiyatli qo‘shildi!");
+                    window.location.href = "../cms.panel/cms.html";
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error("Xatolik:", error);
+                alert("Xatolik yuz berdi, qaytadan urinib ko‘ring!");
+            }
+        });
+    </script>
+</body>
+</html>

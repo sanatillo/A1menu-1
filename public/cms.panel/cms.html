@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafe Admin Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <div id="cms-sidebar-container" class="fixed"></div>
+        <div class="flex-1 p-8" style="padding-left: 270px;">
+            <div class="container mx-auto flex gap-6">
+                <div class="bg-white p-6 shadow-lg rounded-lg w-full">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800">Users</h1>
+                    </div>
+                    <table class="w-full table-auto border-collapse">
+                        <thead class="bg-gray-100 text-left text-gray-600">
+                            <tr>
+                                <th class="py-3 px-4">№</th>
+                                <th class="py-3 px-4">Nomi</th>
+                                <th class="py-3 px-4">Telefon</th>
+                                <th class="py-3 px-4">Manzil</th>
+                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="Users" class="divide-y divide-gray-200"></tbody>
+                    </table>
+                    <div id="errorMessage" class="mt-4 text-red-500 hidden"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('../cms.panel/cms.sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('cms-sidebar-container').innerHTML = data;
+            });
+
+        const cmsUser_url = '/api/cms/users';
+        const DeleteCmsUser_url = '/api/cms/users/delete';
+
+        function Users() {
+            fetch(cmsUser_url)
+                .then(res => {
+                    if (!res.ok) throw new Error('Serverdan xatolik: ' + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    const menuList = document.getElementById("Users");
+                    const errorMessage = document.getElementById("errorMessage");
+                    menuList.innerHTML = "";
+                    errorMessage.classList.add("hidden");
+
+                    if (data.length === 0) {
+                        menuList.innerHTML = '<tr><td colspan="5" class="py-3 px-4 text-center text-gray-500">Foydalanuvchilar topilmadi</td></tr>';
+                        return;
+                    }
+
+                    data.forEach(menu => {
+                        menuList.innerHTML += `
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="py-3 px-4">${menu.id}</td>
+                                <td class="py-3 px-4">${menu.kafe_name}</td>
+                                <td class="py-3 px-4">${menu.phone}</td>
+                                <td class="py-3 px-4">${menu.address}</td> 
+                                <td class="py-3 px-4">${menu.email}</td>
+                                <td class="py-3 px-4 flex gap-2">
+                                    <a href="../frontend.html?id=${menu.id}" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition">Menu ko'rish</a>
+                                    <a href="../backend.html?id=${menu.id}" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition">Ko'rish</a>
+                                    <a href="../cms.panel/cmsEditUser.html?id=${menu.id}" class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition">Tahrirlash</a>
+                                    <button class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition" onclick="deleteUser(${menu.id})">O‘chirish</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error("Xatolik:", error);
+                    const errorMessage = document.getElementById("errorMessage");
+                    errorMessage.textContent = "Ma'lumotlarni yuklashda xatolik yuz berdi!";
+                    errorMessage.classList.remove("hidden");
+                });
+        }
+        Users();
+
+        function deleteUser(menuId) {
+            if (!confirm("Bu foydalanuvchini o‘chirishni xohlaysizmi?")) return;
+
+            fetch(`${DeleteCmsUser_url}/${menuId}`, { method: "DELETE" })
+                .then(res => {
+                    if (!res.ok) throw new Error('O‘chirishda xatolik: ' + res.status);
+                    return res.json();
+                })
+                .then(() => {
+                    Users();  
+                })
+                .catch(error => {
+                    console.error("Xatolik:", error);
+                    alert("O‘chirishda xatolik yuz berdi!");
+                });
+        }
+    </script>
+</body>
+</html>

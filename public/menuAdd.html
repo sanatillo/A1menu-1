@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menyu Qo‘shish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar-container" class="fixed"></div>
+
+        <!-- Qo‘shish formasi -->
+        <div class="flex-1 p-8"  style="padding-left: 270px;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Menyu Turini Qo‘shish</h2>
+                <label class="block mb-2 text-gray-700">Nomi</label>
+                <input type="text" id="addTitle" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Tavsif</label>
+                <input type="text" id="addDescription" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Category</label>
+                <input type="number" id="addCategory" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Rasm</label>
+                <input type="file" id="image" accept="image/*" class="w-full p-2 border rounded-md mb-3">
+                <button class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition" onclick="addMenuType()">Qo‘shish</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar qo'shish
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+
+        const UploadImage_url = "/api/menuType/upload";
+
+        async function addMenuType() {
+            const title = document.getElementById("addTitle").value.trim();
+            const description = document.getElementById("addDescription").value.trim();
+            const categories = document.getElementById("addCategory").value.trim();
+            const fileInput = document.getElementById("image").files[0];
+
+            if (!title || !description || !fileInput) {
+                alert("Barcha maydonlarni to‘ldiring!");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("description", description);
+            formData.append("image", fileInput);
+            formData.append("category_id", categories);
+
+            try {
+                await fetch(UploadImage_url, { method: "POST", body: formData });
+                window.location.href = "backend.html"; // Qo‘shilgandan so‘ng asosiy sahifaga qaytish
+            } catch (error) {
+                console.error("Xatolik:", error);
+            }
+        }
+    </script>
+</body>
+</html>

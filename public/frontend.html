@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B0YB0L0 Kafe Menyusi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Sizning CSS kodlaringiz o‘zgarmagan holda qoldirildi */
+        #menuType {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 12px;
+        }
+        #menuType::-webkit-scrollbar {
+            height: 8px;
+            background-color: rgba(58, 56, 53, 0.3);
+            border-radius: 4px;
+        }
+        #menuType::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 4px;
+        }
+        #menuType span {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .info-wrapper {
+            height: 5rem;
+            transition: height 0.3s ease;
+            overflow: hidden;
+        }
+        .info-wrapper.expanded {
+            height: auto;
+            max-height: 12rem;
+        }
+        .description-wrapper {
+            position: relative;
+            max-height: 2.5rem;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .description-wrapper.expanded {
+            max-height: none;
+        }
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        header {
+            position: relative;
+            z-index: 10;
+        }
+        section {
+            position: relative;
+            z-index: 20;
+            background: #111827;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            margin-top: -40px;
+        }
+        #address {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        #address .address-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex justify-center font-sans">
+    <main class="w-full bg-gray-800 rounded-2xl overflow-hidden shadow-xl" style="max-width: 560px;">
+        <header class="relative">
+            <img id="kafeImage" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg" alt="Restaurant Banner" class="w-full object-cover rounded-t-2xl" style="height: 162px;">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex justify-center items-center" style="height: 162px;">
+                <img id="kafeLogo" src="../uploads/1740140371542.jpg" alt="Logo" class="w-24 h-24 rounded-full border-4 border-white/10">
+            </div>
+            <button id="backBtn" class="absolute top-4 left-4 bg-gray-700 p-2 rounded-full hover:bg-gray-600 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+        </header>
+        <section class="rounded-t-3xl -mt-8 bg-gray-900 px-6 pt-6 pb-4">
+            <div class="flex justify-between items-center">
+                <h2 id="kafeName" class="text-2xl font-bold tracking-tight">B0YB0L0 Kafe</h2>
+                <select id="languageSelect" class="bg-gray-700 text-white border border-gray-600 px-3 py-1 rounded-lg hover:bg-gray-600 transition-all">
+                    <option value="Uzbek">O'zbek</option>
+                    <option value="English">English</option>
+                    <option value="Rus">Rus</option>
+                </select>
+            </div>
+            <p id="address" class="text-gray-400 text-sm flex items-center mt-2 flex-wrap gap-2"></p>
+            <div id="socialLinks" class="mt-2 flex gap-2 flex-wrap"></div>
+            <nav class="flex gap-2 mt-4 overflow-auto" id="menuType"></nav>
+            <h3 id="selectedMenuType" class="text-lg font-semibold text-white mt-2"></h3>
+            <div class="mt-4 space-y-4" id="rasm"></div>
+        </section>
+    </main>
+
+    <script>
+        const menuType_url = 'http://localhost:4100/api/categories';
+        const listOfCategoriesByMenuType = 'http://localhost:4100/api/backend/categoryId';
+        const menuItem_URL = 'http://localhost:4100/api/backend/menuTypeId';
+        const userUrl = 'http://localhost:4100/api/cms/users';
+
+        let activeSpan = null;
+        let currentView = 'categories';
+        let currentCategoryId = null;
+
+        // URL’dan ID olish
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("id");
+ 
+        // Fetch so‘rovlar uchun umumiy funksiya
+        async function fetchWithToken(url) {
+            const response = await fetch(url, {});
+            if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '../public/LandingRegistrator.html';
+                }
+                throw new Error(`So‘rovda xatolik: ${response.status}`);
+            }
+            return response.json();
+        }
+
+        const socialIcons = {
+            facebook: './cms.panel/iconka/facebook.png',
+            instagram: './cms.panel/iconka/instagram.png',
+            twitter: './cms.panel/iconka/twitter.png',
+            tiktok: './cms.panel/iconka/tik-tok.png',
+            snapchat: './cms.panel/iconka/connection.png',
+            youtube: './cms.panel/iconka/youtube.png',
+            whatsapp: './cms.panel/iconka/whatsapp.png',
+            telegram: './cms.panel/iconka/telegram.png',
+            threads: './cms.panel/iconka/threads.png',
+            odnoklassniki: './cms.panel/iconka/odnoklassniki.png',
+            vk: './cms.panel/iconka/vk-social-network-logo.png'
+        };
+
+         
+        if (userId) {
+            fetchWithToken(`${userUrl}/${userId}`)
+                .then(user => {
+                    document.getElementById("kafeImage").src = user.kafe_image || "https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg";
+                    document.getElementById("kafeLogo").src = user.kafe_logo || "../uploads/1740140371542.jpg";
+                    document.getElementById("kafeName").textContent = user.kafe_name || "B0YB0L0 Kafe";
+
+                    const addressElement = document.getElementById("address");
+                    const visibleColumns = user.visible_columns ? user.visible_columns.split(",") : [];
+                    const allFields = {
+                        map_url: { href: user.map_url || "https://yandex.uz/maps/105815/xorazm-province/house/YkkYcQdlQEUGQFprfXl0cHtnZA==/?ll=60.706330%2C41.551925&z=17.87", text: user.address || "Urganch, TATU UF", icon: "📍" },
+                        phone: { href: `tel:${user.phone || '8994257921'}`, text: user.phone || "899 425 79 21", icon: "📞" },
+                        email: { href: `mailto:${user.email || 'A1tech@2025'}`, text: user.email || "A1tech@2025", icon: "📧" }
+                    };
+
+                    addressElement.innerHTML = "";
+                    for (const [key, { href, text, icon }] of Object.entries(allFields)) {
+                        const div = document.createElement("div");
+                        div.className = "address-item";
+                        div.innerHTML = `${icon} <a href="${href}" class="text-blue-400 hover:underline">${text}</a>`;
+                        addressElement.appendChild(div);
+                    }
+
+                    const socialLinks = document.getElementById("socialLinks");
+                    socialLinks.innerHTML = "";
+                    const socialNetworks = user.social_networks ? JSON.parse(user.social_networks) : {};
+                    if (visibleColumns.includes("social_networks")) {
+                        for (const [key, value] of Object.entries(socialNetworks)) {
+                            if (value) {
+                                const link = document.createElement("a");
+                                link.href = value;
+                                link.target = "_blank";
+                                link.className = "hover:opacity-80 transition";
+                                const img = document.createElement("img");
+                                img.src = socialIcons[key] || './cms.panel/iconka/default.png';
+                                img.alt = key;
+                                img.className = "w-7 h-7 object-contain";
+                                link.appendChild(img);
+                                socialLinks.appendChild(link);
+                            }
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error("Xatolik:", error);
+                    document.getElementById("address").textContent = "Foydalanuvchi ma’lumotlari topilmadi!";
+                });
+        } else {
+            console.error("URL’da ID topilmadi!");
+        }
+
+        function renderItems(data, containerId = "rasm") {
+            const rasm = document.getElementById(containerId);
+            rasm.innerHTML = "";
+
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(item => {
+                    const div = document.createElement("div");
+                    div.className = "menu-card relative w-full bg-gray-800 rounded-xl overflow-hidden transition-all duration-300";
+
+                    if (currentView === 'menuTypes') {
+                        const wrapper = document.createElement("div");
+                        wrapper.className = "relative";
+                        if (item.image) {
+                            const img = document.createElement("img");
+                            img.src = item.image;
+                            img.alt = item.title;
+                            img.className = "w-full h-44 object-cover rounded-t-xl";
+                            wrapper.appendChild(img);
+                        }
+                        const title = document.createElement("h3");
+                        title.className = "absolute inset-0 flex items-center justify-center text-white text-lg font-semibold bg-black bg-opacity-40 rounded-t-xl";
+                        title.textContent = item.title;
+                        wrapper.appendChild(title);
+                        div.appendChild(wrapper);
+                        div.onclick = () => MenuItem(item.id, item.title);
+                    } else if (currentView === 'menuItems') {
+                        const visibleColumns = item.is_visible ? item.is_visible.split(",") : [];
+
+                        const imageWrapper = document.createElement("div");
+                        imageWrapper.className = "relative";
+                        if (visibleColumns.includes("image") && item.image_path) {
+                            const img = document.createElement("img");
+                            img.src = item.image_path;
+                            img.alt = item.title;
+                            img.className = "w-full h-48 object-cover";
+                            imageWrapper.appendChild(img);
+                        } else {
+                            const placeholder = document.createElement("div");
+                            placeholder.className = "w-full h-32 bg-gray-700";
+                            imageWrapper.appendChild(placeholder);
+                        }
+                        if (visibleColumns.includes("price") && item.price) {
+                            const price = document.createElement("p");
+                            price.className = "absolute top-3 right-3 bg-emerald-600 text-white font-semibold px-3 py-1 rounded-full text-sm shadow-md";
+                            price.textContent = `${item.price} so'm`;
+                            imageWrapper.appendChild(price);
+                        }
+                        div.appendChild(imageWrapper);
+
+                        const infoWrapper = document.createElement("div");
+                        infoWrapper.className = "info-wrapper p-4";
+
+                        const textWrapper = document.createElement("div");
+                        textWrapper.className = "w-full relative";
+                        const title = document.createElement("h3");
+                        title.className = "text-xl font-semibold text-white";
+                        title.textContent = item.title;
+                        textWrapper.appendChild(title);
+
+                        if (visibleColumns.includes("description") && item.description) {
+                            const descWrapper = document.createElement("div");
+                            descWrapper.className = "description-wrapper mt-2";
+                            const desc = document.createElement("p");
+                            desc.className = "text-gray-400 text-sm leading-relaxed";
+                            desc.textContent = item.description;
+                            descWrapper.appendChild(desc);
+
+                            const toggleButton = document.createElement("button");
+                            toggleButton.className = "absolute top-0 right-0 text-gray-400 p-1 hover:text-gray-200 transition-colors";
+                            toggleButton.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            `;
+                            descWrapper.appendChild(toggleButton);
+
+                            toggleButton.addEventListener("click", () => {
+                                descWrapper.classList.toggle("expanded");
+                                infoWrapper.classList.toggle("expanded");
+                                toggleButton.querySelector("svg").classList.toggle("rotate-180");
+                            });
+
+                            textWrapper.appendChild(descWrapper);
+                        }
+
+                        infoWrapper.appendChild(textWrapper);
+                        div.appendChild(infoWrapper);
+                    }
+
+                    rasm.appendChild(div);
+                });
+            } else {
+                rasm.innerHTML = "<p class='text-red-500'>Ma'lumot topilmadi!</p>";
+            }
+        }
+
+        // Kategoriyalarni yuklash
+        fetchWithToken(menuType_url)
+            .then(data => {
+                const menuList = document.getElementById("menuType");
+                menuList.innerHTML = "";
+
+                data.forEach((menu, index) => {
+                    let span = document.createElement("span");
+                    span.className = "px-4 py-2 flex items-center text-white rounded-full h-10 cursor-pointer bg-gray-700 hover:bg-red-600 transition-all";
+                    span.textContent = menu.category_name;
+                    span.dataset.categoryId = menu.id;
+
+                    span.onclick = () => {
+                        if (activeSpan) {
+                            activeSpan.classList.remove("bg-red-600");
+                            activeSpan.classList.add("bg-gray-700");
+                        }
+                        span.classList.remove("bg-gray-700");
+                        span.classList.add("bg-red-600");
+                        activeSpan = span;
+                        clickCategory(menu.id);
+                    };
+
+                    menuList.appendChild(span);
+
+                    if (index === 0) {
+                        span.click();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error("Ma'lumot yuklashda xatolik:", error);
+                document.getElementById("menuType").innerHTML = "<p class='text-red-500'>Xatolik yuz berdi!</p>";
+            });
+
+        // Kategoriyaga klik qilish (MenuType yuklash)
+        function clickCategory(categoryId) {
+            currentView = 'menuTypes';
+            currentCategoryId = categoryId;
+            const rasm = document.getElementById("rasm");
+            rasm.innerHTML = "<p class='text-gray-400'>Yuklanmoqda...</p>";
+            document.getElementById("selectedMenuType").textContent = "";
+            fetchWithToken(`${listOfCategoriesByMenuType}/${categoryId}`)
+                .then(data => renderItems(data))
+                .catch(error => {
+                    console.error("MenuType yuklashda xatolik:", error);
+                    rasm.innerHTML = "<p class='text-red-500'>Xatolik yuz berdi!</p>";
+                });
+        }
+
+        // Menu itemlarni yuklash
+        function MenuItem(itemId, menuTypeTitle) {
+            currentView = 'menuItems';
+            const rasm = document.getElementById("rasm");
+            rasm.innerHTML = "<p class='text-gray-400'>Yuklanmoqda...</p>";
+            document.getElementById("selectedMenuType").textContent = menuTypeTitle;
+            fetchWithToken(`${menuItem_URL}/${itemId}`)
+                .then(data => renderItems(data))
+                .catch(error => {
+                    console.error("Menu item yuklashda xatolik:", error);
+                    rasm.innerHTML = "<p class='text-red-500'>Xatolik yuz berdi!</p>";
+                });
+        }
+
+        // Orqaga qaytish tugmasi funksiyasi
+        document.getElementById("backBtn").addEventListener("click", () => {
+            if (currentView === 'menuItems' && activeSpan) {
+                clickCategory(activeSpan.dataset.categoryId);
+            } else if (currentView === 'menuTypes' && activeSpan) {
+                fetchWithToken(menuType_url)
+                    .then(data => {
+                        currentView = 'categories';
+                        document.getElementById("rasm").innerHTML = "";
+                        document.getElementById("selectedMenuType").textContent = "";
+                        const menuList = document.getElementById("menuType");
+                        menuList.innerHTML = "";
+                        data.forEach((menu, index) => {
+                            let span = document.createElement("span");
+                            span.className = "px-4 py-2 flex items-center text-white rounded-full h-10 cursor-pointer bg-gray-700 hover:bg-red-600 transition-all";
+                            span.textContent = menu.category_name;
+                            span.dataset.categoryId = menu.id;
+
+                            span.onclick = () => {
+                                if (activeSpan) {
+                                    activeSpan.classList.remove("bg-red-600");
+                                    activeSpan.classList.add("bg-gray-700");
+                                }
+                                span.classList.remove("bg-gray-700");
+                                span.classList.add("bg-red-600");
+                                activeSpan = span;
+                                clickCategory(menu.id);
+                            };
+
+                            menuList.appendChild(span);
+
+                            if (index === 0) {
+                                span.click();
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error("Kategoriyalarni qayta yuklashda xatolik:", error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>

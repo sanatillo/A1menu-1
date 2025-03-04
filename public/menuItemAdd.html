@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menyu Qo‘shish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar-container" class="fixed"></div>
+ 
+        <div class="flex-1 p-8"  style="padding-left: 270px;">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 mx-auto">
+                <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Menyu Item Qo‘shish</h2>
+                <label class="block mb-2 text-gray-700">Nomi</label>
+                <input type="text" id="addItemTitle" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Tavsif</label>
+                <input type="text" id="addItemDescription" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Menu type</label>
+                <input type="number" id="addItemMenuType" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Qiymati</label>
+                <input type="number" id="addItemPrice" class="w-full p-2 border rounded-md mb-3">
+                <label class="block mb-2 text-gray-700">Rasm</label>
+                <label class="block mb-2 text-gray-700">Ko‘rinadigan ustunlar</label>
+                <div class="mb-3">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="isVisibleImage" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Rasm</span>
+                    </label>
+                    <label class="inline-flex items-center ml-4">
+                        <input type="checkbox" id="isVisiblePrice" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Narx</span>
+                    </label>
+                    <label class="inline-flex items-center ml-4">
+                        <input type="checkbox" id="isVisibleDescription" class="form-checkbox text-indigo-600" checked>
+                        <span class="ml-2">Tavsif</span>
+                    </label>
+                </div>
+
+                <input type="file" id="addItemImage" accept="image/*" class="w-full p-2 border rounded-md mb-3">
+                <button class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition" onclick="addMenuItem()">Qo‘shish</button>
+            </div>
+        </div>
+    </div>
+
+    <script> 
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+            });
+
+        const addMenuItem_URL = "/api/backend/menu/add";
+
+        async function addMenuItem() {
+    const title = document.getElementById('addItemTitle').value;
+    const description = document.getElementById('addItemDescription').value;
+    const menuType = Number(document.getElementById('addItemMenuType').value);
+    const price = Number(document.getElementById('addItemPrice').value);
+    const image = document.getElementById('addItemImage').files[0];
+
+    // ✅ Tanlangan checkboxlarni yig‘amiz
+    let visibleColumns = [];
+    if (document.getElementById('isVisibleImage').checked) visibleColumns.push("image");
+    if (document.getElementById('isVisiblePrice').checked) visibleColumns.push("price");
+    if (document.getElementById('isVisibleDescription').checked) visibleColumns.push("description");
+
+    const isVisible = visibleColumns.join(",");
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("menuType", menuType);
+    formData.append("price", price);
+    if (image) formData.append("image", image);
+    formData.append("isVisible", isVisible);  
+
+    try {
+        const response = await fetch('/api/backend/menu/add', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("Menu item qo‘shildi!");
+        } else {
+            alert("Xatolik: " + data.message);
+        }
+    } catch (error) {
+        console.error("Yuborishda xatolik!", error);
+    }
+}
+
+
+
+    </script>
+</body>
+</html>

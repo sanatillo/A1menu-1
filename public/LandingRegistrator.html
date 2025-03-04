@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyMenu - QR Code Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    </style>
+
+</head>
+
+<body class="bg-peach-50 text-gray-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <h1 class="text-xl font-bold text-orange-500">A1Menu</h1>
+            <nav class="space-x-6">
+                <a href="#login" class="hover:text-orange-500">Login</a>
+                <a href="#register" class="hover:text-black bg-orange-500 text-white px-4 py-2 rounded-md">Sign
+                    up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto">
+        <!-- Hero Section -->
+        <section class="py-20 text-center">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold text-orange-500 mb-4">QR kod menyusi, bu siz uchun ishlaydi</h2>
+                <p class="text-lg mb-6">Sodda va tezkor usulda o'zingizning QR menyuingizni yarating!</p>
+                <a href="#create" class="bg-orange-500 text-white px-6 py-3 rounded-md hover:bg-orange-600">Create QR
+                    Menu</a>
+                <a href="#menu-example" class="ml-4 text-orange-500 hover:underline">Menu example</a>
+            </div>
+        </section>
+
+        <section id="login" class="py-16 hidden">
+            <div class="container mx-auto max-w-md">
+                <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+                <form id="loginForm" class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4">
+                        <input type="email" id="loginEmail" name="email" placeholder="Email"
+                            class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="tel" id="loginPhone" name="phone" placeholder="Phone"
+                            class="w-full p-2 border rounded" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-orange-500 text-white p-2 rounded hover:bg-orange-600">Login</button>
+                </form>
+                <p class="text-center mt-4">Hisobingiz yo'qmi? <a href="#register"
+                        class="text-orange-500 hover:underline">Sign up</a></p>
+            </div>
+        </section>
+
+        <section id="register" class="py-16 hidden">
+            <div class="container mx-auto max-w-md">
+                <h2 class="text-2xl font-bold text-center mb-6">Sign up</h2>
+                <form id="registerForm" class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4">
+                        <input type="email" id="registerEmail" name="email" placeholder="Email"
+                            class="w-full p-2 border rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="tel" id="registerPhone" name="phone" placeholder="Phone (e.g., +998901234567)"
+                            class="w-full p-2 border rounded" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-orange-500 text-white p-2 rounded hover:bg-orange-600">Register</button>
+                </form>
+                <p class="text-center mt-4">Allaqachon hisobingiz bormi? <a href="#login"
+                        class="text-orange-500 hover:underline">Login</a></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 text-center" style=" position: absolute; width: 100%; bottom: 0;">
+        <p>© 2025 A1Menu. Barcha huquqlar himoyalangan.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLink = document.querySelector('a[href="#login"]');
+            const registerLink = document.querySelector('a[href="#register"]');
+            const heroSection = document.querySelector('.py-20');
+            const loginSection = document.querySelector('#login');
+            const registerSection = document.querySelector('#register');
+            const registerForm = document.querySelector('#registerForm');
+            const loginForm = document.querySelector('#loginForm');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'text-center mt-4 text-red-500';
+
+            // Boshlang'ich holat
+            loginSection.classList.add('hidden');
+            registerSection.classList.add('hidden');
+
+            // Login link
+            loginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                heroSection.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                registerSection.classList.add('hidden');
+                messageDiv.remove();
+            });
+
+            // Register link
+            registerLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                heroSection.classList.add('hidden');
+                loginSection.classList.add('hidden');
+                registerSection.classList.remove('hidden');
+                messageDiv.remove();
+            });
+
+            // Login ichidagi Sign in link
+            document.querySelector('#login a[href="#register"]').addEventListener('click', (e) => {
+                e.preventDefault();
+                heroSection.classList.add('hidden');
+                loginSection.classList.add('hidden');
+                registerSection.classList.remove('hidden');
+                messageDiv.remove();
+            });
+
+            // Register ichidagi Login link
+            document.querySelector('#register a[href="#login"]').addEventListener('click', (e) => {
+                e.preventDefault();
+                heroSection.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                registerSection.classList.add('hidden');
+                messageDiv.remove();
+            });
+
+            // Register form submit
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(registerForm);
+                const data = {
+                    email: formData.get('email'),
+                    phone: formData.get('phone')
+                };
+
+                try {
+                    const response = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Registratsiya muvaffaqiyatsiz');
+
+                    messageDiv.textContent = result.message;
+                    messageDiv.className = 'text-center mt-4 text-green-500';
+                    registerForm.reset();
+                } catch (error) {
+                    messageDiv.textContent = Array.isArray(error.message) ? error.message.join(' ') : error.message;
+                    messageDiv.className = 'text-center mt-4 text-red-500';
+                }
+                registerSection.appendChild(messageDiv);
+            });
+
+            // Login form submit
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+                const phone = document.getElementById('loginPhone').value.trim();
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, phone })
+                    });
+                    const data = await response.json();
+
+                    if (data.userId) {
+                        localStorage.setItem("userId", data.userId);
+                        window.location.href = "./backend.html"; // Sahifani o'zgartirish
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (error) {
+                    console.error('Login xatosi:', error);
+                    alert('Xatolik yuz berdi, qayta urinib ko‘ring!');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
