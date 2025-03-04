@@ -2,29 +2,23 @@ const express = require('express'); // Express framework
 const app = express(); // Express server
 const PORT = 4100; // Server porti
 const path = require('path'); // Fayllar bilan ishlash uchun
-const bodyParser = require('body-parser'); // JSON formatda ma'lumotlar olish uchun
-// const multer = require('multer'); // Rasm yuklash uchun
-// const connectDB = require('./db');  // Ma'lumotlar bazasiga ulanish
+const bodyParser = require('body-parser'); // JSON formatda ma'lumotlar olish uchun 
 require('dotenv').config(); // .env faylni o‘qish uchun
-
-// const categories = require('./categories'); // Kategoriyalar uchun router
+ 
 const register = require('./register'); // Ro‘yxatdan o‘tish uchun router
 const login = require('./login'); // Kirish uchun router
 const CMSAdmin = require('./controllers/cmsAdminController'); // CMS Admin uchun router
-const ApiBackend = require('./controllers/kafeAdminController'); // Backend uchun router
-// const menuType = require('./menuType'); // Menu turlari uchun router
+const ApiBackend = require('./controllers/kafeAdminController'); // Backend uchun router 
  
     app.use(bodyParser.json({ limit: '10mb' }));
     app.use(express.static('public'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
-
-    // app.use('/api/categories', categories);
+ 
     app.use('/api/register', register);
     app.use('/api/login', login);
     app.use('/api/cms', CMSAdmin);
-    app.use('/api', ApiBackend);
-    // app.use('/api/menuType', menuType);
+    app.use('/api', ApiBackend); 
     
     app.get('/', (req, res) => {
         res.sendFile(__dirname + '/public/LandingRegistrator.html');
