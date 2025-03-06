@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # A1Menu - Murakkab Menyu Boshqaruv Tizimi
 
 [![Node.js](https://img.shields.io/badge/Node.js-v22.13.1-green)](https://nodejs.org/)
@@ -62,6 +62,3 @@ Loyihani mahalliy kompyuteringizda ishga tushirish uchun quyidagi qadamlarni baj
         - **Ism:** Sanatbek
         - **GitHub:** sanatillo
         - **Aloqa:** sanatbek@gmail.com
-=======
-# A1menu
->>>>>>> 67fea3f (Initial commit)
